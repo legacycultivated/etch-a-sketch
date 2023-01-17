@@ -1,36 +1,78 @@
-let gridContainer = document.querySelector(".gridContainer");
-let slider = document.getElementById("myRange");
-let sliderValue = document.getElementById("sliderValue");
-sliderValue.innerHTML = slider.value;
+// Select the elements on the page - canvas, shake button
+const canvas = document.querySelector("#etch-a-sketch");
+const ctx = canvas.getContext("2d");
+const shakebutton = document.querySelector(".shake");
+const moveAmount = 10;
 
-function createGrid(gridSize) {
-  for (let i = 0; i < gridSize; i++) {
-    let gridRow = document.createElement("div");
-    gridContainer.appendChild(gridRow);
-    gridRow.setAttribute("class", "gridRow");
-    for (let j = 0; j < gridSize; j++) {
-      let gridSquare = document.createElement("div");
-      gridRow.appendChild(gridSquare);
-      gridSquare.setAttribute("class", "gridSquare");
-    }
+// set up our canvas for drawing
+ctx.lineJoin = "round";
+ctx.lineCap = "round";
+ctx.lineWidth = 10;
+
+const { width, height } = canvas;
+console.log(canvas);
+let x = Math.floor(Math.random() * width);
+let y = Math.floor(Math.random() * height);
+
+ctx.beginPath();
+ctx.moveTo(x, y);
+ctx.lineTo(x, y);
+ctx.stroke();
+
+// write a draw function
+
+function handleKey(e) {
+  if (e.key.includes("Arrow")) {
+    e.preventDefault();
+    draw({ key: e.key });
+    console.log(e.key);
+    console.log("HANDLING KEY");
   }
 }
-
-function removeRows() {
-  let gridRowsToRemove = document.querySelectorAll(".gridRow");
-  for (let i = 0; i < gridRowsToRemove.length; i++) {
-    gridRowsToRemove[i].remove();
+window.addEventListener("keydown", handleKey);
+const hue = 0;
+ctx.strokeStyle = `hsl(${hue}, 100%, 50%)`;
+function draw({ key }) {
+  ctx.strokeStyle = `hsl(${Math.random() * 360}, 100%, 50%)`;
+  console.log(key);
+  //start path
+  ctx.beginPath();
+  ctx.moveTo(x, y);
+  // write a handler for the keys
+  switch (key) {
+    case "ArrowUp":
+      y -= moveAmount;
+      break;
+    case "ArrowRight":
+      x += moveAmount;
+      break;
+    case "ArrowDown":
+      y += moveAmount;
+      break;
+    case "ArrowLeft":
+      x -= moveAmount;
+      break;
+    default:
+      break;
   }
+  ctx.lineTo(x, y);
+  ctx.stroke();
 }
 
-slider.oninput = function () {
-  removeRows();
-  createGrid((sliderValue.innerHTML = this.value));
-  let colorSquare = document.querySelector(".gridSquare");
+// clear or shake function
 
-  function addColor() {
-    colorSquare.classList.add("addColor");
-  }
+function clearCanvas() {
+  canvas.classList.add("shake");
+  ctx.clearRect(0, 0, width, height);
+  canvas.addEventListener(
+    "animationend",
+    function () {
+      console.log("done the shake!");
+      canvas.classList.remove("shake");
+    },
+    { once: true }
+  );
+}
+shakebutton.addEventListener("click", clearCanvas);
 
-  colorSquare.addEventListener("click", () => addColor());
-};
+// listen for arrow keys

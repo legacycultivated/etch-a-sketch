@@ -10,11 +10,12 @@
         <link rel="stylesheet" href="style.css">
     </head>
     <body>
-        <div class="slidecontainer">
-            <input type="range" min="2" max="64" value="8" class="slider" id="myRange">
-            <span id="slider">Value: <span id="sliderValue"></span></span>
-          </div>
-        <div class="gridContainer"></div>
+            <div class="canvasWrap">
+              <canvas width="1600" height="1000" id="etch-a-sketch"></canvas>
+              <div class="buttons">
+                <button class="shake">Shake!</button>
+              </div>
+            </div>
         
         <script src="script.js" async defer></script>
     </body>
